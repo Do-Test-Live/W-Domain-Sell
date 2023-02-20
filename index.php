@@ -1,3 +1,21 @@
+<?php
+include ('config/db_config.php');
+
+$result = 0;
+
+if (isset($_POST['register'])){
+    $domain_name = mysqli_real_escape_string($con, $_POST['domain_name']);
+    $price = mysqli_real_escape_string($con, $_POST['price']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $insert_query = $con->query("INSERT INTO `sell_data`(`domain_name`, `amount`, `email`) VALUES ('$domain_name','$price','$email')");
+    if($insert_query){
+        $result = 1;
+    }else{
+        $result = 2;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html itemscope="" itemtype="http://schema.org/WebSite">
 <head>
@@ -21,41 +39,100 @@
     <meta charset="utf-8"/>
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
     <meta content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover" name="viewport"/>
-    <meta content="20230217115833" name="extra"/>
-    <meta content="authenticity_token" name="csrf-param"/>
-    <meta content="T7wH/BJQCV+TzYw8J5bhPoldodbLHnlhJCPnKa5rTWeGxzfpuBJ6f5RY3VsbaPH7tXasWxYZz28/oIX2NC11gA=="
-          name="csrf-token"/>
-    <title>Sell The Domain</title>
-    <meta content="The domain name ngt.ai is for sale. Make an offer or buy it now at a set price." name="description"/>
-    <link href="https://cdn3.dan.com/assets/icons/favicon-17cae8213bf0fbeae27b644f0616b74981f348af943f27b73abf8e7b3a557b8f.ico"
+    <title>NGT Domains</title>
+
+    <link href="favicon.png"
           rel="icon" type="image/x-icon"/>
-    <link href="https://cdn3.dan.com/assets/icons/touch-icon-iphone-d1f42707d954cbb53adf2739c07d622a0175cfdb40816fc66213545fa00505ef.png"
-          rel="apple-touch-icon"/>
-    <link href="https://cdn1.dan.com/assets/icons/touch-icon-ipad-7e9822ba1e8fa34ce37262f6746dbc72819d754f805a410dbeb2cedb08a05789.png"
-          rel="apple-touch-icon" sizes="76x76"/>
-    <link href="https://cdn3.dan.com/assets/icons/touch-icon-iphone-retina-42b99bfa7f037e7773362a76bf1ee70632541e4054f9003ce6f190dc9070fd8d.png"
-          rel="apple-touch-icon" sizes="120x120"/>
-    <link href="https://cdn2.dan.com/assets/icons/touch-icon-ipad-retina-56a8f2519ed554a55e6084d77c1ab7ef3511f8ed5e7877db50a9865621a79290.png"
-          rel="apple-touch-icon" sizes="152x152"/>
+
     <script defer="defer" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"></script>
     <script src="https://cdn1.dan.com/assets/vendor/svg4everybody-f514fdcad5509c1d8608ad8ed6b18dc17777e467f3c0ef19b6b8e44753b288be.js"></script>
     <script src="https://cdn0.dan.com/packs/js/runtime~public/fonts-2fe2dda32aa2d2a2aa67.js"></script>
     <script src="https://cdn0.dan.com/packs/js/public/fonts-51a7ce48823de02ee10a.chunk.js"></script>
-    <meta content="ngt.ai - Domain Name For Sale | Dan.com" property="og:title"/>
-    <meta content="product" property="og:type"/>
-    <meta content="https://dan.com/buy-domain/ngt.ai" property="og:url"/>
-    <meta content="I found a great domain name for sale on Dan.com. Check it out!" property="og:description"/>
-    <meta content="Dan.com" property="og:site_name"/>
-    <meta content="https://cdn1.dan.com/assets/public/meta_image-9bbd349284e67abd14a22306610f434a460984c96de3e56f55e891d8b348cf1a.png"
-          property="og:image"/>
-    <meta content="summary" name="twitter:card"/>
-    <meta content="@undeveloped" name="twitter:site"/>
-    <meta content="ngt.ai - Domain Name For Sale | Dan.com" name="twitter:title"/>
-    <meta content="I found a great domain name for sale on @undeveloped. Check it out!" name="twitter:description"/>
-    <meta content="@undeveloped" name="twitter:creator"/>
+
     <script src="https://cdn2.dan.com/packs/js/runtime~public/shared-1b01634fd7ca21c7761f.js"></script>
     <script src="https://cdn2.dan.com/packs/js/8-8c137601dbf187c44d1f.chunk.js"></script>
     <script src="https://cdn2.dan.com/packs/js/public/shared-d9c0eed345f681187efe.chunk.js"></script>
+
+    <style>
+        .ddl-select {
+            visibility:hidden;
+        }
+        .ddl {
+            position:relative;
+            height:50px;
+            width:100%;
+            text-align:initial;
+        }
+        .ddl::after {
+            content:'';
+            position:absolute;
+            top:25px;
+            right:20px;
+            width:12px;
+            height:2px;
+            background:#555;
+            z-index:99;
+            transform:rotate(-40deg);
+            transition:0.5s;
+        }
+        .ddl::before {
+            content:'';
+            position:absolute;
+            top:25px;
+            right:28px;
+            width:12px;
+            height:2px;
+            background:#555;
+            z-index:99;
+            transform:rotate(40deg);
+            transition:0.5s;
+        }
+        .ddl.active::after{
+            right:28px;
+        }
+        .ddl.active::before{
+            right:20px;
+        }
+        .ddl-input {
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            cursor:pointer;
+            border-radius:10px;
+            padding:10px 20px;
+            outline:none;
+            background:#fff;
+            border:1px solid #8795aa;
+        }
+        .ddl.active .ddl-options {
+            visibility:visible;
+            opacity:1;
+        }
+        .ddl .ddl-options {
+            position:absolute;
+            width:100%;
+            top:55px;
+            background:#fff;
+            border-radius:10px;
+            overflow:hidden;
+            visibility:hidden;
+            opacity:0;
+            transition:0.25s;
+            z-index: 999;
+            border:1px solid #e9e9e9;
+            box-shadow: 0 0 5px rgba(0,0,0,0.10);
+        }
+        .ddl .ddl-options > div {
+            padding: 10px 20px;
+            cursor:pointer;
+        }
+        .ddl .ddl-options > div:hover {
+            background: #000000;
+            color: #fff;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column">
 <div class="locale-banner-component">
@@ -68,15 +145,15 @@
 </div>
 <a name="page-top"></a>
 <nav class="navbar navbar-expand-md">
-    <a class="navbar-brand" href="/"></a>
-    <button class="navbar-toggler not-the-hamburger collapsed" data-target="#mobile-nav" data-toggle="collapse"
+    <img src="logoo.png" alt="NGT Logo">
+    <!--<button class="navbar-toggler not-the-hamburger collapsed" data-target="#mobile-nav" data-toggle="collapse"
             type="button">
         <span class="top-minus minus"></span>
         <span class="bottom-minus minus"></span>
-    </button>
+    </button>-->
     <div class="collapse navbar-collapse" id="mobile-nav">
         <div class="mx-0 px-0 d-md-none pt-5">
-            <li class="nav-item py-3 border-bottom border-dark">
+            <!--<li class="nav-item py-3 border-bottom border-dark">
                 <a class="nav-link menu-link px-0" href="#">Buy a domain</a>
             </li>
             <li class="nav-item py-3 border-bottom border-dark">
@@ -144,14 +221,14 @@
                         </div>
                     </div>
                 </div>
-            </li>
+            </li>-->
             <!--<li class="nav-item dropdown py-3 border-dark">
                 <a class="nav-link menu-link px-0" href="https://dan.com/users/login">Login</a>
             </li>-->
         </div>
     </div>
     <div class="collapse navbar-collapse" id="desktop-nav">
-        <ul class="navbar-nav mr-auto">
+        <!--<ul class="navbar-nav mr-auto">
             <li class="nav-item nav-item-pr">
                 <a class="nav-link menu-link px-0" href="#">Buy a domain</a>
             </li>
@@ -228,7 +305,7 @@
                     </div>
                 </div>
             </li>
-        </ul>
+        </ul>-->
         <!--<div class="nav-btn-wrapper">
             <a class="btn btn-sm btn-outline-secondary my-sm-0" href="https://dan.com/users/login">
                 <div class="text-nowrap">Login</div>
@@ -258,137 +335,6 @@
         payment processor, Adyen. Adyen is the payment platform of choice for many leading tech companies like Uber
         &amp;eBay.</p>
 </div>
-<div class="col-md-12 read-more" id="makeOfferLearnMore">
-    <div class="make-offer-modal">
-        <h4 class="mb-3">Make an offer conditions</h4>
-        <ul class="mb-5 vertical-icon-list">
-            <li>
-                <span class="li-icon">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-advertisement'/>)
-                    </svg>
-                </span>
-                <h5>Value Added Tax</h5>
-                <p>The Value Added Tax (VAT) is a consumption tax applied in the European Union (EU) to all goods and
-                    services.</p>
-                <div class="read-more-collapse" data-toggled-by="#valueAddedTaxToggle" id="valueAddedTax">
-                    <div class="subtitle">Who has to pay VAT?</div>
-                    <ul class="left-aligned-list">
-                        <li>All consumers in the EU are charged VAT on the purchase of goods and services.</li>
-                        <li>Businesses in the EU buying from a business in the same country are also charged VAT.</li>
-                        <li>Businesses in the EU buying from a business in a different EU country are not charged VAT.
-                        </li>
-                        <li>Consumers and businesses outside of the European Union are not charged VAT.</li>
-                    </ul>
-                    <div class="subtitle">Is your VAT calculation wrong?</div>
-                    <p>The VAT rate provided on this page is only an estimation. It will be corrected during the
-                        checkout process after entering your billing details.</p>
-                    <div class="vat_example">
-                        <div class="conversion mt-3">
-                            <div class="subtitle mb-2">VAT calculation example</div>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>What do I pay?</th>
-                                    <th>Costs in USD</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Price excl. VAT</td>
-                                    <td>USD $1,000</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>21% VAT</td>
-                                    <td>USD $210</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Total Price</strong>
-                                    </td>
-                                    <td>
-                                        <strong>USD $1,210</strong>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="col-md-12 read-more" id="offerCalculationModal">
-    <div class="offer-calculation-modal">
-        <h4 class="mb-3">Estimate in BDT</h4>
-        <ul class="mb-5 vertical-icon-list">
-            <li>
-                <span class="li-icon">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-trending-up'/>)
-                    </svg>
-                </span>
-                <h5>Conversion</h5>
-                <p>This amount is an estimate based on the most recent currency conversion rate.</p>
-                <div class="conversion mt-3">
-                    <div class="subtitle mb-2">Pricing estimate in BDT</div>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>What do I pay monthly?</th>
-                            <th>Costs in USD</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Price excl. VAT</td>
-                            <td>
-                                $<span class="price_ex"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>0% VAT</td>
-                            <td>
-                                $<span class="vat"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Total Price</strong>
-                            </td>
-                            <td>
-                                <strong>
-                                    $<span class="total_price"></span>
-                                </strong>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="modal fade modal-fullscreen-sm" id="readMoreModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-left">
-                <a class="close" data-dismiss="modal" href="#">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-cross'/>
-                        )
-                    </svg>
-                </a>
-            </div>
-            <div class="modal-body"></div>
-        </div>
-    </div>
-</div>
 <div class="content flex-grow-1">
     <div class="parked-domains--show h-100">
         <div class="parked-domains--templates--minimalistic--show bg-gradient-coral light-color" style="">
@@ -398,45 +344,67 @@
                     <div class="parked-domains--templates--minimalistic--offerbox">
                         <div class="offer-box elevate p4" id="offerbox-main">
                             <div class="parking_title">
-                                The domain name <h1 class='text-bold auto-shrink'>ngt.ai
+                                Please <h1 class='text-bold auto-shrink'>Choose
                             </h1>
-                                is for sale!
+                                The Domain Name
                             </div>
+                            <?php
+                            if($result == 1){
+                                ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>Success!</strong> Your request is submitted.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <?php
+                            }elseif ($result == 2){
+                                ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Sorry!</strong> Something went wrong.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <?php
+                            }
+                            ?>
+
                             <div class="purchasing-option minimalistic" data-auto-select="true"
                                  data-url="https://dan.com/buy-domain/ngt.ai/offers/new?utm_campaign=MakeOffer&amp;utm_medium=cta&amp;utm_source=dan.com"
                                  data-vat="0" id="makeOffer">
                                 <h5 class="mb-2">Make an offer</h5>
                                 <div class="offer-input">
                                     <p class="vat">
-                                    <form accept-charset="UTF-8" action="#"
-                                          class="simple_form new_public_domains_offer"
-                                          data-client-side-validations="{&quot;html_settings&quot;:{&quot;type&quot;:&quot;SimpleForm::FormBuilder&quot;,&quot;error_class&quot;:&quot;invalid-feedback&quot;,&quot;error_tag&quot;:&quot;span&quot;,&quot;wrapper_error_class&quot;:&quot;has-error&quot;,&quot;wrapper_tag&quot;:&quot;div&quot;,&quot;wrapper_class&quot;:&quot;form-group&quot;,&quot;wrapper&quot;:&quot;redesign&quot;},&quot;number_format&quot;:{&quot;separator&quot;:&quot;.&quot;,&quot;delimiter&quot;:&quot;,&quot;},&quot;validators&quot;:{&quot;public_domains_offer[bid]&quot;:{&quot;minimum_bid&quot;:[{&quot;message&quot;:&quot;Your offer does not meet the minimum starting offer requirement set by the seller.&quot;}],&quot;maximum_bid&quot;:[{&quot;message&quot;:&quot;You cannot place an offer higher than the buy now price of the domain.&quot;}],&quot;presence&quot;:[{&quot;message&quot;:&quot;can&#39;t be blank&quot;}],&quot;numericality&quot;:[{&quot;messages&quot;:{&quot;numericality&quot;:&quot;Please enter numbers only&quot;,&quot;only_integer&quot;:&quot;Please enter numbers only&quot;},&quot;only_integer&quot;:true},{&quot;messages&quot;:{&quot;numericality&quot;:&quot;is not a number&quot;,&quot;less_than_or_equal_to&quot;:&quot;must be less than or equal to 99999999&quot;},&quot;less_than_or_equal_to&quot;:99999999}]}}}"
-                                          id="new_public_domains_offer" method="post" novalidate="novalidate">
-                                        <input name="authenticity_token" type="hidden"
-                                               value="FeNVutUackN4oG7AYpRTWO7Rbx1m3gshKp/og3fpt0zcmGWvf1gBY381P6deakOd0vpikLvZvS8xHIpc7a+Pqw=="/>
-                                        <div class="form-group integer required public_domains_offer_bid">
-                                            <input autocomplete="off" class="form-control numeric integer required"
-                                                   data-buy-now-available="false"
-                                                   data-maximum-bid="99999999"
-                                                   data-minimum-bid="400"
-                                                   data-minimum-bid-error="Domain seller only takes offers into consideration from $400 and above"
-                                                   id="public_domains_offer_bid" max="99999999" min="0"
-                                                   name="public_domains_offer[bid]" onKeyPress="if(this.value.length &gt;= 8) return false" onPaste="event.preventDefault()"
-                                                   step="1" type="number"/>
-                                            <label class="control-label integer required"
-                                                   for="public_domains_offer_bid">Make an offer</label>
+                                    <form accept-charset="UTF-8" action="#" method="post"
+                                          class="simple_form new_public_domains_offer">
+                                        <select class="ddl-select" id="list" name="domain_name">
+                                            <option value="" selected>Select Domain</option>
+                                            <?php
+                                            $fetch_data = $con->query("select * from domain_list");
+                                            if($fetch_data){
+                                                while($data = mysqli_fetch_assoc($fetch_data)){
+                                                    ?>
+                                                    <option value="<?php echo $data['domain_name'];?>"><?php echo $data['domain_name'];?></option>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+
+                                        <div class="form-group integer required public_domains_offer_bid" style="margin-top: 25px;">
+                                            <input autocomplete="off" class="form-control required"
+                                                   type="number" placeholder="Amount HKD" name="price"/>
+                                            <input autocomplete="off" class="form-control required" type="email" placeholder="Email" name="email" style="margin-top: 25px;"/>
+
+                                        </div>
+                                        <div class="next-button">
+                                                <button class="btn btn-success" type="submit" name="register">
+                                                    Submit
+                                                </button>
                                         </div>
                                     </form>
                                     </p></div>
-                            </div>
-                            <div class="next-button">
-                                <a class="purchaseAction btn btn-success" disabled="disabled" href="#" target="_top">
-                                    Next
-                                    <svg class="icon " fill="currentColor">
-                                        <use xlink:href='https:/packs/spritemap.svg#sprite-arrow-right'/>
-                                        )
-                                    </svg>
-                                </a>
                             </div>
                             <hr>
                             <ul class="checkmarks">
@@ -471,11 +439,10 @@
                         <div class="domain-seller mb-4">
                             <div class="avatar">
                                 <div class="avatar-wrapper">
-                                    <span class="avatar-default bg-17 avatar-md">DS</span>
+                                    <span class="avatar-default bg-17 avatar-md">NGT</span>
                                 </div>
                             </div>
                             <div class="description">
-                                <span>Seller</span>
                                 <h5>Domain seller</h5>
                             </div>
                         </div>
@@ -572,139 +539,58 @@
         </clipPath>
     </defs>
 </svg>
-<!--<footer>
-    <div class="container-xl">
-        <div class="row">
-            <div class="col-6 col-md-3">
-                <h5>Services</h5>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/buy_a_domain">Buy a domain</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/sell_your_domain">Sell your domain</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/api_partnership_program">API Partnership Program</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/brokerage">Brokerage</a>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 no-margin-left-mobile">
-                <h5>Learn</h5>
-                <div class="footer-link">
-                    <a class="button-secondary" href="https://dan.pr.co" rel="noreferrer, noopener"
-                       target="_blank">News</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/trust_and_security">Trust &amp;Security</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/help_center">Help center</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/transaction_explorer">Transaction explorer</a>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 margin-top-mobile">
-                <h5>Company</h5>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/careers">Careers – We’re hiring!</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/our_story">Our story</a>
-                </div>
-                <div class="footer-link">
-                    <a class="button-secondary" href="/contact">Contact us</a>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 social-links no-margin-left-mobile margin-top-mobile">
-                <h5>Follow us</h5>
-                <a href="https://twitter.com/undeveloped" rel="noreferrer, noopener" target="_blank">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-twitter'/>
-                        )
-                    </svg>
-                </a>
-                <a href="https://domaining.com/feed/dan/" rel="noreferrer, noopener" target="_blank">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-domaining'/>
-                        )
-                    </svg>
-                </a>
-                <a href="https://www.linkedin.com/company/dan-com" rel="noreferrer, noopener" target="_blank">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-linkedin'/>
-                        )
-                    </svg>
-                </a>
-                <a href="https://blog.undeveloped.com/" target="_blank">
-                    <svg class="icon " fill="currentColor">
-                        <use xlink:href='https:/packs/spritemap.svg#sprite-medium'/>
-                        )
-                    </svg>
-                </a>
-            </div>
-        </div>
-        <hr/>
-        <div class="row legal">
-            <div class="col-lg-10 text-center text-lg-left">
-                <div class="caption">
-                    <a href="/privacy" target="_blank">Privacy policy</a>
-                    <span class="divider">·</span>
-                    <a href="/terms_of_use" target="_blank">Terms of use</a>
-                    <span class="divider">·</span>
-                    <a href="/disclaimer" target="_blank">Disclaimer</a>
-                    <span class="divider">·</span>
-                    <a href="/sitemap" target="_blank">Sitemap</a>
-                    <span class="divider">·</span>
-                    © 2023 Dan.com an Undeveloped BV subsidiary. All Rights Reserved.
-                </div>
-            </div>
-            <div class="col-lg-2 text-lg-right text-right mt-5 mt-lg-0 locale-section">
-                <div class="application&#45;&#45;sections&#45;&#45;locale_form text-center text-md-right">
-                    <div class="btn-group dropup dropup-sm pull-left">
-                        <button aria-expanded="false" aria-haspopup="true" class="btn btn-default dropdown-toggle"
-                                data-toggle="dropdown" id="locale-dropdown" type="button">English
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <ul class="list-group">
-                                <a class="list-group-item" href="?new_locale=nl-nl&amp;domain_name=ngt.ai"
-                                   rel="nofollow">Nederlands</a>
-                                <a class="list-group-item" href="?new_locale=es-es&amp;domain_name=ngt.ai"
-                                   rel="nofollow">Español</a>
-                                <a class="list-group-item" href="?new_locale=hi-in&amp;domain_name=ngt.ai"
-                                   rel="nofollow">हिंदी</a>
-                                <a class="list-group-item" href="?new_locale=de-de&amp;domain_name=ngt.ai"
-                                   rel="nofollow">Deutsch</a>
-                                <a class="list-group-item" href="?new_locale=fr-fr&amp;domain_name=ngt.ai"
-                                   rel="nofollow">Français</a>
-                                <a class="list-group-item" href="?new_locale=zh-cn&amp;domain_name=ngt.ai"
-                                   rel="nofollow">中文</a>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>-->
-<div class="content elevate" id="fixed-offerbox-footer">
-    <section class="py-0">
-        <div class="container-xl fixed-offer single-option">
-            <div class="row align-items-center">
-                <div class="col d-none d-md-block col-7-md mb-4">
-                    <div class="background-image payment-logos"></div>
-                </div>
-                <div class="col col-md-auto buying-options-wrapper align-items-center mb-4 text-nowrap"></div>
-                <div class="col col-6 col-2-md col-md-auto buy-button-wrapper mb-4">
-                    <div class="buy-button text-right">
-                        <a class="purchaseAction btn btn-success" href="#scroll-to-offerbox">Make offer</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
+
+
+<script>
+    $(function () {
+        $(".ddl-select").each(function () {
+            $(this).hide();
+            var $select = $(this);
+            var _id = $(this).attr("id");
+            var wrapper = document.createElement("div");
+            wrapper.setAttribute("class", "ddl ddl_" + _id);
+
+            var input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("class", "ddl-input");
+            input.setAttribute("id", "ddl_" + _id);
+            input.setAttribute("readonly", "readonly");
+            input.setAttribute(
+                "placeholder",
+                $(this)[0].options[$(this)[0].selectedIndex].innerText
+            );
+
+            $(this).before(wrapper);
+            var $ddl = $(".ddl_" + _id);
+            $ddl.append(input);
+            $ddl.append("<div class='ddl-options ddl-options-" + _id + "'></div>");
+            var $ddl_input = $("#ddl_" + _id);
+            var $ops_list = $(".ddl-options-" + _id);
+            var $ops = $(this)[0].options;
+            for (var i = 0; i < $ops.length; i++) {
+                $ops_list.append(
+                    "<div data-value='" +
+                    $ops[i].value +
+                    "'>" +
+                    $ops[i].innerText +
+                    "</div>"
+                );
+            }
+
+            $ddl_input.click(function () {
+                $ddl.toggleClass("active");
+            });
+            $ddl_input.blur(function () {
+                $ddl.removeClass("active");
+            });
+            $ops_list.find("div").click(function () {
+                $select.val($(this).data("value")).trigger("change");
+                $ddl_input.val($(this).text());
+                $ddl.removeClass("active");
+            });
+        });
+    });
+
+</script>
 </body>
 </html>
