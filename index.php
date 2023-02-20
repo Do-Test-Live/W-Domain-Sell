@@ -145,7 +145,7 @@ if (isset($_POST['register'])){
 </div>
 <a name="page-top"></a>
 <nav class="navbar navbar-expand-md">
-    <img src="logoo.png" alt="NGT Logo">
+    <img src="logoo.png" alt="NGT Logo" style="width: 100px;">
     <!--<button class="navbar-toggler not-the-hamburger collapsed" data-target="#mobile-nav" data-toggle="collapse"
             type="button">
         <span class="top-minus minus"></span>
