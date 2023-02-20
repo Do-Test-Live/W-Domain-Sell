@@ -398,10 +398,12 @@ if (isset($_POST['register'])){
                                             <input autocomplete="off" class="form-control required" type="email" placeholder="Email" name="email" style="margin-top: 25px;"/>
 
                                         </div>
-                                        <div class="next-button">
+                                        <div class="row text-center" style="align-items: center; justify-content: center;">
+                                            <div class="next-button">
                                                 <button class="btn btn-success" type="submit" name="register">
                                                     Submit
                                                 </button>
+                                            </div>
                                         </div>
                                     </form>
                                     </p></div>
